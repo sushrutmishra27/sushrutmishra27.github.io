@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Read(//opt/homebrew/bin/**)",
+      "Bash(/opt/homebrew/bin/ffmpeg -version)",
+      "Bash(/opt/homebrew/bin/exiftool -ver)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(npx tsc *)",
+      "Bash(sudo -n true)",
+      "Bash(curl -s -o /dev/null -w \"network OK \\(HTTP %{http_code}\\)\\\\n\" --max-time 10 https://registry.npmjs.org/)",
+      "Bash(node -e \"const p=require\\('./node_modules/exiftool-vendored/package.json'\\); console.log\\('version:', p.version\\); console.log\\('type:', p.type||'commonjs'\\); console.log\\('main:', p.main\\); console.log\\('exports:', JSON.stringify\\(p.exports\\)\\)\")",
+      "Bash(node -e \"try{require\\('exiftool-vendored'\\);console.log\\('CJS require: OK'\\)}catch\\(e\\){console.log\\('CJS require: FAILS ->', e.code\\)}\")",
+      "Bash(node scripts/ingest.js /tmp/sunimuni-test-input)",
+      "Bash(node -e \"const m=require\\('./data/memories.json'\\); let t=0; for\\(const d in m\\) t+=m[d].media.length; console.log\\('total media entries:', t, '\\(should be 6\\)'\\); console.log\\('dates:', Object.keys\\(m\\).length, '\\(should be 4\\)'\\)\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const m=require\\('./data/memories.json'\\); m['2024-05-01'].title='The day the fountain soaked us both'; m['2024-03-14'].caption='A quiet afternoon'; fs.writeFileSync\\('./data/memories.json', JSON.stringify\\(m,null,2\\)+'\\\\n'\\)\")",
+      "Bash(node scripts/compress-videos.js)",
+      "Bash(node -e \"const m=require\\('./data/memories.json'\\); console.log\\(JSON.stringify\\(m['2024-05-01'],null,2\\)\\); console.log\\('caption on 03-14 preserved:', m['2024-03-14'].caption\\)\")",
+      "Bash(rm -rf public/media/* /tmp/sunimuni-test-input /Users/pragatitripathi/Desktop/sunimuni/gen-fixtures.js *)",
+      "Bash(node -e ' *)",
+      "Bash(echo \"=== file types in your export folder ===\"; find ~/Desktop/\"Sunimuni photos\" -type f | sed 's/.*\\\\.//' | tr '[:upper:]' '[:lower:]' | sort | uniq -c | sort -rn; echo; echo \"=== total files ===\"; find ~/Desktop/\"Sunimuni photos\" -type f | wc -l)",
+      "Bash(node -e \"console.log\\('yarl version:', require\\('./node_modules/yet-another-react-lightbox/package.json'\\).version\\); console.log\\('bcryptjs:', require\\('./node_modules/bcryptjs/package.json'\\).version\\); console.log\\('framer-motion:', require\\('./node_modules/framer-motion/package.json'\\).version\\)\")",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(node scripts/make-thumbs.js)",
+      "Bash(cp /tmp/audit-dates.js ./audit-dates.js)",
+      "Bash(node audit-dates.js)",
+      "Bash(node scripts/adopt.js)",
+      "Bash(node -e \"const m=require\\('./data/memories.json'\\); console.log\\('2099-01-01 entry:', JSON.stringify\\(m['2099-01-01']||null\\)\\); console.log\\('total dates:', Object.keys\\(m\\).length\\)\")",
+      "Bash(node scripts/extract-suspects.js 2099-01-01 2026-07-11)",
+      "Bash(node scripts/ingest.js ~/Desktop/\"Sunimuni photos\")",
+      "Bash(git --version)",
+      "Bash(gh --version)",
+      "Bash(git config *)",
+      "Bash(git init *)",
+      "Bash(git checkout *)",
+      "Bash(git add *)"
+    ]
+  }
+}

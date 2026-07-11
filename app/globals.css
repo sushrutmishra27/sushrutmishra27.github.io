@@ -1,0 +1,94 @@
+@import "tailwindcss";
+
+/* Playful, colorful palette — candy pinks, lavender, peach, gold.
+   Utility classes: bg-ivory, text-ink, text-accent, font-serif, font-sans. */
+@theme {
+  --color-ivory: #fff8fb;
+  --color-ink: #5b2a6e; /* deep plum — readable but warm */
+  --color-ink-soft: #9a6fa8;
+  --color-accent: #ec4899; /* candy pink for glowing dates */
+  --color-accent-soft: #f9c9e5;
+  --color-lavender: #a855f7;
+  --color-peach: #fb923c;
+  --color-gold: #f59e0b;
+
+  --font-serif: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+html,
+body {
+  /* A soft candy gradient instead of a flat background. */
+  background: linear-gradient(160deg, #ffe9f2 0%, #f3e8ff 45%, #ffeede 100%)
+    fixed;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  min-height: 100%;
+}
+
+/* Gradient text for the "sunimuni" wordmark. */
+.wordmark {
+  background: linear-gradient(90deg, #ec4899, #a855f7, #fb923c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* --- Glowing memory dates on the calendar ------------------------------- */
+
+.memory-day {
+  background-color: color-mix(in srgb, var(--color-accent) 26%, transparent);
+  box-shadow: 0 0 10px 3px color-mix(in srgb, var(--color-accent) 40%, transparent);
+  cursor: pointer;
+  transition: box-shadow 0.4s ease, transform 0.2s ease;
+}
+
+.memory-day:hover {
+  animation: memory-pulse 1.8s ease-in-out infinite;
+  transform: scale(1.15);
+}
+
+@keyframes memory-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 10px 3px color-mix(in srgb, var(--color-accent) 40%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 20px 8px color-mix(in srgb, var(--color-lavender) 65%, transparent);
+  }
+}
+
+/* Just after closing a memory: the date glows brighter, then settles. */
+.memory-day-return {
+  animation: memory-return 1.8s ease-out;
+}
+
+@keyframes memory-return {
+  0% {
+    box-shadow: 0 0 24px 10px color-mix(in srgb, var(--color-accent) 80%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 10px 3px color-mix(in srgb, var(--color-accent) 40%, transparent);
+  }
+}
+
+/* --- Polaroid cards in the scatter view --------------------------------- */
+
+.polaroid {
+  background: #fffdf9;
+  padding: 8px 8px 26px;
+  border-radius: 4px;
+  box-shadow: 0 6px 18px rgba(91, 42, 110, 0.25);
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.polaroid:active {
+  cursor: grabbing;
+}
+
+.polaroid img {
+  pointer-events: none; /* drags grab the card, not the image */
+  display: block;
+}

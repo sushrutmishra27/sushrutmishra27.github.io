@@ -1,0 +1,15 @@
+# Dependencies (re-installed with `npm install`, never committed)
+/node_modules
+
+# Next.js build output
+/.next
+/out
+
+# Misc
+.DS_Store
+*.log
+.env*.local
+
+# NOTE: public/media/ and data/memories.json are intentionally NOT ignored.
+# The whole point of this project is that photos, videos, and titles live in
+# the Git repo itself.
