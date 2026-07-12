@@ -27,7 +27,7 @@ export default function YearCalendar({
   const nextYear = idx >= 0 && idx < years.length - 1 ? years[idx + 1] : null;
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-6 py-10">
+    <div className="mx-auto w-full max-w-[1440px] px-4 py-10 md:px-8">
       {/* Year selector */}
       <div className="mb-10 flex items-center justify-center gap-6">
         <button
@@ -55,7 +55,7 @@ export default function YearCalendar({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6"
+        className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
       >
         {Array.from({ length: 12 }, (_, month) => (
           <MonthGrid

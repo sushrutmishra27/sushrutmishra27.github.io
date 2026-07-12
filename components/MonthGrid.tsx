@@ -68,18 +68,18 @@ export default function MonthGrid({
   ];
 
   return (
-    <div className="rounded-2xl bg-white/55 p-4 shadow-sm">
+    <div className="rounded-2xl bg-white/55 p-5 shadow-sm">
       <h3
-        className="mb-2 text-center font-serif text-sm font-semibold tracking-wide"
+        className="mb-3 text-center font-serif text-lg font-semibold tracking-wide"
         style={{ color: MONTH_COLORS[month] }}
       >
         {MONTH_NAMES[month]}
       </h3>
-      <div className="grid grid-cols-7 gap-y-1 text-center">
+      <div className="grid grid-cols-7 gap-y-1.5 text-center">
         {WEEKDAYS.map((w, i) => (
           <span
             key={`w${i}`}
-            className="pb-1 font-sans text-[10px] text-ink-soft/60"
+            className="pb-1 font-sans text-xs text-ink-soft/60"
           >
             {w}
           </span>
@@ -94,7 +94,7 @@ export default function MonthGrid({
             return (
               <span
                 key={date}
-                className="mx-auto flex h-7 w-7 items-center justify-center font-sans text-xs text-ink-soft/45"
+                className="mx-auto flex h-9 w-9 items-center justify-center font-sans text-sm text-ink-soft/45"
               >
                 {day}
               </span>
@@ -106,7 +106,7 @@ export default function MonthGrid({
                 onClick={() => onSelectDate(date)}
                 onMouseEnter={() => showKiss(date)}
                 aria-label={`Open memory from ${date}`}
-                className={`memory-day flex h-7 w-7 items-center justify-center rounded-full font-sans text-xs font-medium text-ink ${
+                className={`memory-day flex h-9 w-9 items-center justify-center rounded-full font-sans text-sm font-medium text-ink ${
                   isHighlight ? "memory-day-return" : ""
                 }`}
               >

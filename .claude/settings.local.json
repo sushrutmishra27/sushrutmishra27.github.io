@@ -34,7 +34,28 @@
       "Bash(git config *)",
       "Bash(git init *)",
       "Bash(git checkout *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit -m 'sunimuni v1 — memory calendar for P *)",
+      "Read(//private/tmp/**)",
+      "Bash(curl -sL -o gh.zip \"https://github.com/cli/cli/releases/download/v2.86.0/gh_2.86.0_macOS_arm64.zip\")",
+      "Bash(unzip -oq gh.zip)",
+      "Bash(./gh_2.86.0_macOS_arm64/bin/gh --version)",
+      "Bash(mkdir -p ~/bin)",
+      "Bash(cp /tmp/gh_2.86.0_macOS_arm64/bin/gh ~/bin/gh)",
+      "Bash(~/bin/gh auth *)",
+      "Bash(git push *)",
+      "Bash(~/bin/gh repo *)",
+      "Bash(git ls-remote *)",
+      "Bash(~/bin/gh api *)",
+      "Bash(echo \"PUSH EXIT CODE: $?\")",
+      "Bash(git remote *)",
+      "Bash(git commit -m 'add GitHub Pages deploy workflow *)",
+      "Bash(echo \"PUSH EXIT: $?\")",
+      "Bash(~/bin/gh run *)",
+      "Bash(curl -s -o /dev/null -w \"homepage: HTTP %{http_code} \\(%{size_download} bytes\\)\\\\n\" https://sushrutmishra27.github.io/)",
+      "Bash(curl -s https://sushrutmishra27.github.io/)",
+      "Bash(curl -s -o /dev/null -w \"a real photo: HTTP %{http_code}\\\\n\" \"https://sushrutmishra27.github.io/media/2025-03-07/$\\(ls public/media/2025-03-07)",
+      "Bash(git commit -m 'wider calendar: 4 months per row, bigger day cells, tighter margins *)"
     ]
   }
 }
