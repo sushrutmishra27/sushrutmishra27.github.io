@@ -444,6 +444,10 @@
       {
         "type": "image",
         "src": "/media/2025-05-15/eb0a5edc-7f3a-4be4-b7ff-b7f253a8bc04-1-105-c.jpeg"
+      },
+      {
+        "type": "image",
+        "src": "/media/2025-05-15/1b02ff7a-c8e1-466e-bc7d-c3f98b7bab51-1-102-o.jpeg"
       }
     ]
   },
@@ -1951,6 +1955,10 @@
       {
         "type": "image",
         "src": "/media/2025-11-12/748522c4-8d78-4af7-8d77-bd926c83ba23-1-105-c.jpeg"
+      },
+      {
+        "type": "image",
+        "src": "/media/2025-11-12/fe1ec0c6-8984-4f2f-b89b-430b9c2a048e-1-105-c.jpeg"
       }
     ]
   },
@@ -2480,15 +2488,6 @@
       }
     ]
   },
-  "2026-01-28": {
-    "title": "watching you pick out something shiny and new",
-    "media": [
-      {
-        "type": "image",
-        "src": "/media/2026-01-28/fe1ec0c6-8984-4f2f-b89b-430b9c2a048e-1-105-c.jpeg"
-      }
-    ]
-  },
   "2026-02-14": {
     "title": "red balloons and you in that maroon dress",
     "media": [
@@ -2624,6 +2623,10 @@
       {
         "type": "image",
         "src": "/media/2026-03-03/a1adbede-d9c9-422d-b58e-ef9867a3dc4d.jpeg"
+      },
+      {
+        "type": "image",
+        "src": "/media/2026-03-03/a28e5bf5-b3c7-4fa7-a777-f176eccad1d4-1-102-o.jpeg"
       }
     ]
   },
@@ -3331,15 +3334,10 @@
       {
         "type": "image",
         "src": "/media/2026-03-08/3e8d8e39-467e-4122-bfb2-1d98a16068d8.jpg"
-      }
-    ]
-  },
-  "2026-03-09": {
-    "title": "following your bicycle down a quiet palm road",
-    "media": [
+      },
       {
         "type": "image",
-        "src": "/media/2026-03-09/a5b45f01-33e8-478f-b463-5bfd35292b7a-4-5005-c.jpeg"
+        "src": "/media/2026-03-08/a5b45f01-33e8-478f-b463-5bfd35292b7a-4-5005-c.jpeg"
       }
     ]
   },
@@ -3544,15 +3542,6 @@
       }
     ]
   },
-  "2026-04-12": {
-    "title": "cheering beside you under stadium lights",
-    "media": [
-      {
-        "type": "image",
-        "src": "/media/2026-04-12/214765c5-7650-46c8-a05e-231bd78e3d35.jpg"
-      }
-    ]
-  },
   "2026-04-16": {
     "title": "matching nose strips, matching hearts",
     "media": [
@@ -3597,6 +3586,10 @@
       {
         "type": "image",
         "src": "/media/2026-04-18/ac3780b2-549a-4514-bc7a-2cb448606a07.jpg"
+      },
+      {
+        "type": "image",
+        "src": "/media/2026-04-18/214765c5-7650-46c8-a05e-231bd78e3d35.jpg"
       }
     ]
   },
@@ -3642,6 +3635,11 @@
       {
         "type": "image",
         "src": "/media/2026-04-25/e074553f-5a40-4512-a7f7-148dded199c3.jpg"
+      },
+      {
+        "type": "video",
+        "src": "/media/2026-04-25/89dc8398-d876-45ab-885e-98285d9591f7.mp4",
+        "poster": "/media/2026-04-25/89dc8398-d876-45ab-885e-98285d9591f7-thumb.jpg"
       }
     ]
   },
@@ -3705,16 +3703,6 @@
       {
         "type": "image",
         "src": "/media/2026-05-01/8eba8565-c585-429c-a0b4-02c4bcd87929.jpg"
-      }
-    ]
-  },
-  "2026-05-02": {
-    "title": "watching you get ready to dazzle",
-    "media": [
-      {
-        "type": "video",
-        "src": "/media/2026-05-02/89dc8398-d876-45ab-885e-98285d9591f7.mp4",
-        "poster": "/media/2026-05-02/89dc8398-d876-45ab-885e-98285d9591f7-thumb.jpg"
       }
     ]
   },
@@ -3801,24 +3789,6 @@
       {
         "type": "image",
         "src": "/media/2026-06-02/d2558a22-59fd-491d-a682-ee902de29af5.jpg"
-      }
-    ]
-  },
-  "2026-06-13": {
-    "title": "water everywhere, and you dancing through it",
-    "media": [
-      {
-        "type": "image",
-        "src": "/media/2026-06-13/a28e5bf5-b3c7-4fa7-a777-f176eccad1d4-1-102-o.jpeg"
-      }
-    ]
-  },
-  "2026-06-21": {
-    "title": "wind in your hair on a misty hill",
-    "media": [
-      {
-        "type": "image",
-        "src": "/media/2026-06-21/1b02ff7a-c8e1-466e-bc7d-c3f98b7bab51-1-102-o.jpeg"
       }
     ]
   }

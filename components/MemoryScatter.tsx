@@ -6,6 +6,7 @@ import type { Memory } from "@/lib/memories";
 import { formatDate } from "@/lib/memories";
 import MemoryLightbox from "@/components/MemoryLightbox";
 import BirthdayFloats from "@/components/BirthdayFloats";
+import songs from "@/data/songs.json";
 
 type Props = {
   date: string;
@@ -55,8 +56,9 @@ export default function MemoryScatter({ date, memory, onClose }: Props) {
   // Where the current press started — lets us tell a tap from a drag.
   const pressStart = useRef<{ x: number; y: number } | null>(null);
 
-  // This date's song, if one exists at /audio/<date>.mp3.
-  // "none" = no song file for this date, so no music button either.
+  // A random song from the shared playlist plays each time a date opens,
+  // looping for as long as she stays. Opening again = a different song
+  // (we remember the last one played and skip it).
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [songState, setSongState] = useState<"none" | "playing" | "paused">(
     "none"
@@ -67,10 +69,15 @@ export default function MemoryScatter({ date, memory, onClose }: Props) {
   const zoomOpen = zoomIndex !== null;
 
   useEffect(() => {
-    // Try this date's song. If the file doesn't exist the audio element
-    // errors out quietly and no music button appears.
-    const audio = new Audio(`/audio/${date}.mp3`);
-    audio.loop = true;
+    if (!songs.length) return;
+    // Pick a random song, avoiding the one that played last time.
+    const last = sessionStorage.getItem("sunimuni-last-song");
+    const pool = songs.length > 1 ? songs.filter((s) => s !== last) : songs;
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    sessionStorage.setItem("sunimuni-last-song", pick);
+
+    const audio = new Audio(pick);
+    audio.loop = true; // short clips keep repeating for as long as she stays
     audio.volume = 0.55;
     audioRef.current = audio;
     audio

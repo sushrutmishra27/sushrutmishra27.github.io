@@ -55,7 +55,15 @@
       "Bash(curl -s -o /dev/null -w \"homepage: HTTP %{http_code} \\(%{size_download} bytes\\)\\\\n\" https://sushrutmishra27.github.io/)",
       "Bash(curl -s https://sushrutmishra27.github.io/)",
       "Bash(curl -s -o /dev/null -w \"a real photo: HTTP %{http_code}\\\\n\" \"https://sushrutmishra27.github.io/media/2025-03-07/$\\(ls public/media/2025-03-07)",
-      "Bash(git commit -m 'wider calendar: 4 months per row, bigger day cells, tighter margins *)"
+      "Bash(git commit -m 'wider calendar: 4 months per row, bigger day cells, tighter margins *)",
+      "Bash(curl -s \"https://sushrutmishra27.github.io/calendar/?v=$\\(date +%s\\)\")",
+      "Bash(curl -s https://sushrutmishra27.github.io/calendar/)",
+      "Bash(dig +short sunimuni.living A)",
+      "Bash(dig +short www.sunimuni.living CNAME)",
+      "Bash(curl -s -o /dev/null -w \"http://sunimuni.living → HTTP %{http_code} \\(redirects to: %{redirect_url}\\)\\\\n\" http://sunimuni.living/ --max-time 15)",
+      "Bash(curl -s -o /dev/null -w \"https://sunimuni.living → HTTP %{http_code}\\\\n\" https://sunimuni.living/ --max-time 15)",
+      "Bash(curl -s -o /dev/null -w \"https now: %{http_code}\\\\n\" https://sunimuni.living/ --max-time 10)",
+      "Bash(git commit -m 'random looping songs per date-open + re-home 6 misplaced single photos *)"
     ]
   }
 }
