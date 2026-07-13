@@ -78,7 +78,12 @@
       "Bash(curl -s -o /dev/null -w \"birthday song: %{http_code}\\\\n\" https://sunimuni.living/audio/birthday.mp3 --max-time 15)",
       "Bash(curl -s -o /dev/null -w \"shuffle song: %{http_code}\\\\n\" https://sunimuni.living/audio/song-08.mp3 --max-time 15)",
       "Bash(curl -s -o /dev/null -w \"http->https redirect: %{redirect_url}\\\\n\" http://sunimuni.living/ --max-time 15)",
-      "Bash(git commit -m 'refresh 3 titles to match remaining photos after trust reset *)"
+      "Bash(git commit -m 'refresh 3 titles to match remaining photos after trust reset *)",
+      "Bash(mv public/media/2024-07-16/8c1a4bb4-72ac-4508-9cc3-56d43a57b85d-1-102-o-sm.jpg /tmp/hidden-test-sm.jpg)",
+      "Bash(curl -s -o /dev/null -w \"thumb now: %{http_code}\\\\n\" \"http://localhost:3000/media/2024-07-16/8c1a4bb4-72ac-4508-9cc3-56d43a57b85d-1-102-o-sm.jpg\")",
+      "Bash(mv /tmp/hidden-test.jpg public/media/2024-07-16/8c1a4bb4-72ac-4508-9cc3-56d43a57b85d-1-102-o.jpeg)",
+      "Bash(mv /tmp/hidden-test-sm.jpg public/media/2024-07-16/8c1a4bb4-72ac-4508-9cc3-56d43a57b85d-1-102-o-sm.jpg)",
+      "Bash(git commit -m 'remove broken photos from view; even grid-jitter scatter centering *)"
     ]
   }
 }

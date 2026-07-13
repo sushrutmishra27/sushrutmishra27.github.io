@@ -28,14 +28,32 @@ function smallSrc(src: string): string {
   return src.replace(/(\.[a-z0-9]+)$/i, "-sm.jpg");
 }
 
-// Jumbled pile, kept to the middle of the screen with comfortable
-// breathing room from all four edges. Positions are the card's top-left
-// corner, so the ranges leave space for the card itself on the right and
-// bottom, and for the title block at the top.
+// Jumbled pile, kept to the middle of the screen with comfortable breathing
+// room from all four edges. Instead of pure randomness (which can clump all
+// the photos into one corner), we lay an invisible grid over the centre
+// region, shuffle its cells, and drop one photo per cell with a small
+// wobble — random-feeling, but always evenly spread and centred.
 function makeSpots(count: number): Spot[] {
-  return Array.from({ length: count }, () => ({
-    left: 20 + Math.random() * 42, // 20%..62% of screen width
-    top: 28 + Math.random() * 26, // 28%..54% of screen height
+  const LEFT = 18, RIGHT = 62, TOP = 26, BOTTOM = 54; // % of screen (card top-left corner)
+  const cols = Math.max(1, Math.ceil(Math.sqrt(count * 1.6)));
+  const rows = Math.max(1, Math.ceil(count / cols));
+  const cells: { left: number; top: number }[] = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      cells.push({
+        left: cols === 1 ? (LEFT + RIGHT) / 2 : LEFT + ((RIGHT - LEFT) * c) / (cols - 1),
+        top: rows === 1 ? (TOP + BOTTOM) / 2 : TOP + ((BOTTOM - TOP) * r) / (rows - 1),
+      });
+    }
+  }
+  // Shuffle so photo order doesn't read left-to-right like a boring grid.
+  for (let i = cells.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cells[i], cells[j]] = [cells[j], cells[i]];
+  }
+  return cells.slice(0, count).map((cell) => ({
+    left: cell.left + (Math.random() - 0.5) * 5,
+    top: cell.top + (Math.random() - 0.5) * 4,
     rotate: (Math.random() - 0.5) * 24,
   }));
 }
@@ -53,6 +71,18 @@ export default function MemoryScatter({ date, memory, onClose }: Props) {
   const [zOrder, setZOrder] = useState<number[]>(() =>
     memory.media.map((_, i) => i)
   );
+  // Photos whose files fail to load are removed from view entirely —
+  // no broken frames, no empty white cards, and the zoom skips them too.
+  const [broken, setBroken] = useState<Set<string>>(() => new Set());
+  const visibleMedia = memory.media.filter((it) => !broken.has(it.src));
+
+  function markBroken(src: string) {
+    setBroken((prev) => {
+      const next = new Set(prev);
+      next.add(src);
+      return next;
+    });
+  }
   // Where the current press started — lets us tell a tap from a drag.
   const pressStart = useRef<{ x: number; y: number } | null>(null);
 
@@ -64,7 +94,7 @@ export default function MemoryScatter({ date, memory, onClose }: Props) {
     "none"
   );
 
-  const lined = memory.media.length < LINE_LIMIT;
+  const lined = visibleMedia.length < LINE_LIMIT;
   const isBirthdayDate = date.endsWith("-07-16");
   const zoomOpen = zoomIndex !== null;
 
@@ -124,6 +154,7 @@ export default function MemoryScatter({ date, memory, onClose }: Props) {
   }
 
   function renderCard(item: Memory["media"][number], i: number) {
+    if (broken.has(item.src)) return null; // failed to load -> not shown at all
     const isVideo = item.type === "video";
     const thumb = isVideo ? item.poster : smallSrc(item.src);
     const spot = spots[i];
@@ -147,7 +178,7 @@ export default function MemoryScatter({ date, memory, onClose }: Props) {
             : 0;
           if (moved > 6) return;
           bringToFront(i);
-          setZoomIndex(i);
+          setZoomIndex(visibleMedia.findIndex((x) => x.src === item.src));
         }}
         initial={{ opacity: 0, scale: 0.5, rotate: 0 }}
         animate={{ opacity: 1, scale: 1, rotate: lined ? 0 : spot.rotate }}
@@ -172,9 +203,14 @@ export default function MemoryScatter({ date, memory, onClose }: Props) {
           draggable={false}
           className="h-auto w-28 rounded-[2px] md:w-40"
           onError={(e) => {
-            // If a small copy is missing, quietly fall back to the original.
-            if (e.currentTarget.src !== item.src) {
-              e.currentTarget.src = item.src;
+            // Photo: if the small copy is missing, quietly try the original;
+            // if that fails too (or a video's poster fails), the file is
+            // truly broken — remove the card from view entirely.
+            const el = e.currentTarget;
+            if (!isVideo && !el.src.endsWith(item.src)) {
+              el.src = item.src;
+            } else {
+              markBroken(item.src);
             }
           }}
         />
@@ -257,7 +293,7 @@ export default function MemoryScatter({ date, memory, onClose }: Props) {
       {zoomOpen && (
         <MemoryLightbox
           date={date}
-          memory={memory}
+          memory={{ ...memory, media: visibleMedia }}
           index={zoomIndex}
           onClose={() => setZoomIndex(null)}
         />
