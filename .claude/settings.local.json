@@ -63,7 +63,14 @@
       "Bash(curl -s -o /dev/null -w \"http://sunimuni.living → HTTP %{http_code} \\(redirects to: %{redirect_url}\\)\\\\n\" http://sunimuni.living/ --max-time 15)",
       "Bash(curl -s -o /dev/null -w \"https://sunimuni.living → HTTP %{http_code}\\\\n\" https://sunimuni.living/ --max-time 15)",
       "Bash(curl -s -o /dev/null -w \"https now: %{http_code}\\\\n\" https://sunimuni.living/ --max-time 10)",
-      "Bash(git commit -m 'random looping songs per date-open + re-home 6 misplaced single photos *)"
+      "Bash(git commit -m 'random looping songs per date-open + re-home 6 misplaced single photos *)",
+      "Bash(curl -s -o /dev/null -w \"https homepage: %{http_code}\\\\n\" https://sunimuni.living/)",
+      "Bash(curl -s -o /dev/null -w \"http redirects to https: %{redirect_url}\\\\n\" http://sunimuni.living/)",
+      "Bash(curl -s -o /dev/null -w \"a song file: %{http_code}\\\\n\" https://sunimuni.living/audio/song-08.mp3)",
+      "Bash(curl -s -o /dev/null -w \"a photo: %{http_code}\\\\n\" \"https://sunimuni.living/media/2025-03-07/$\\(ls public/media/2025-03-07)",
+      "Bash(node scripts/make-songs.js)",
+      "Bash(node -e \"const s=require\\('./data/songs.json'\\); console.log\\('birthday.mp3 in shuffle pool:', s.includes\\('/audio/birthday.mp3'\\)\\)\")",
+      "Bash(git commit -m 'reserve birthday.mp3 exclusively for July 16 dates *)"
     ]
   }
 }

@@ -69,12 +69,19 @@ export default function MemoryScatter({ date, memory, onClose }: Props) {
   const zoomOpen = zoomIndex !== null;
 
   useEffect(() => {
-    if (!songs.length) return;
-    // Pick a random song, avoiding the one that played last time.
-    const last = sessionStorage.getItem("sunimuni-last-song");
-    const pool = songs.length > 1 ? songs.filter((s) => s !== last) : songs;
-    const pick = pool[Math.floor(Math.random() * pool.length)];
-    sessionStorage.setItem("sunimuni-last-song", pick);
+    // Her birthday (July 16, any year) always gets its own special song.
+    // Every other date draws randomly from the shared playlist, avoiding
+    // whichever song played last.
+    let pick: string;
+    if (isBirthdayDate) {
+      pick = "/audio/birthday.mp3";
+    } else {
+      if (!songs.length) return;
+      const last = sessionStorage.getItem("sunimuni-last-song");
+      const pool = songs.length > 1 ? songs.filter((s) => s !== last) : songs;
+      pick = pool[Math.floor(Math.random() * pool.length)];
+      sessionStorage.setItem("sunimuni-last-song", pick);
+    }
 
     const audio = new Audio(pick);
     audio.loop = true; // short clips keep repeating for as long as she stays

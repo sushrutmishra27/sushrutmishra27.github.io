@@ -18,10 +18,12 @@ const path = require('path');
 const AUDIO_DIR = path.resolve(__dirname, '..', 'public', 'audio');
 const OUT = path.resolve(__dirname, '..', 'data', 'songs.json');
 
+// birthday.mp3 is special — it plays ONLY on July 16 dates and never in
+// the everyday shuffle, so it's excluded from the playlist here.
 const songs = fs.existsSync(AUDIO_DIR)
   ? fs
       .readdirSync(AUDIO_DIR)
-      .filter((f) => f.toLowerCase().endsWith('.mp3'))
+      .filter((f) => f.toLowerCase().endsWith('.mp3') && f !== 'birthday.mp3')
       .sort()
       .map((f) => `/audio/${f}`)
   : [];
