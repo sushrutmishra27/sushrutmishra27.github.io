@@ -87,22 +87,23 @@ async function main() {
 
     const remaining = [];
     for (const item of entry.media) {
-      if (item.type !== 'image') {
-        remaining.push(item); // videos are never suspects here
-        continue;
-      }
       const abs = path.join(PROJECT_ROOT, 'public', item.src);
       if (!fs.existsSync(abs)) {
         remaining.push(item);
         continue;
       }
 
-      // Does the photo's own metadata confirm a capture date?
+      // Does the file's own metadata confirm a capture date MATCHING the
+      // folder it sits on? (exiftool reads both photo EXIF and video
+      // QuickTime dates.) Anything unproven gets pulled.
       let confirmed = false;
       try {
         const t = await exiftool.read(abs);
         const dt = t.DateTimeOriginal || t.CreateDate || t.MediaCreateDate;
-        confirmed = !!(dt && typeof dt === 'object' && dt.year);
+        if (dt && typeof dt === 'object' && dt.year) {
+          const real = `${dt.year}-${pad2(dt.month)}-${pad2(dt.day)}`;
+          confirmed = real === date;
+        }
       } catch {
         confirmed = false;
       }
@@ -113,14 +114,20 @@ async function main() {
         continue;
       }
 
-      // Suspect: move it (and remove its small copy) out to review/.
-      // "unsorted-" prefix so adopt.js never re-files it until YOU move it
-      // into a real date folder.
+      // Suspect: move it (with its poster, minus its small copy) out to
+      // review/. "unsorted-" prefix so adopt.js never re-files it until YOU
+      // move it into a real date folder.
       const destDir = path.join(REVIEW_DIR, `unsorted-${date}`);
       await fsp.mkdir(destDir, { recursive: true });
       await fsp.rename(abs, path.join(destDir, path.basename(abs)));
       const sm = abs.replace(/(\.[a-z0-9]+)$/i, '-sm.jpg');
       if (fs.existsSync(sm)) await fsp.rm(sm);
+      if (item.type === 'video' && item.poster) {
+        const posterAbs = path.join(PROJECT_ROOT, 'public', item.poster);
+        if (fs.existsSync(posterAbs)) {
+          await fsp.rename(posterAbs, path.join(destDir, path.basename(posterAbs)));
+        }
+      }
       moved++;
       console.log(`   📤 ${date}/${path.basename(abs)} → review/unsorted-${date}/`);
     }

@@ -70,7 +70,9 @@
       "Bash(curl -s -o /dev/null -w \"a photo: %{http_code}\\\\n\" \"https://sunimuni.living/media/2025-03-07/$\\(ls public/media/2025-03-07)",
       "Bash(node scripts/make-songs.js)",
       "Bash(node -e \"const s=require\\('./data/songs.json'\\); console.log\\('birthday.mp3 in shuffle pool:', s.includes\\('/audio/birthday.mp3'\\)\\)\")",
-      "Bash(git commit -m 'reserve birthday.mp3 exclusively for July 16 dates *)"
+      "Bash(git commit -m 'reserve birthday.mp3 exclusively for July 16 dates *)",
+      "Bash(node scripts/extract-suspects.js --all)",
+      "Bash(git commit -m 'trust reset: only metadata-proven media on the calendar; 194 unproven items parked in review/ *)"
     ]
   }
 }
