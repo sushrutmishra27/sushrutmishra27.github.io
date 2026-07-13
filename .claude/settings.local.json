@@ -72,7 +72,13 @@
       "Bash(node -e \"const s=require\\('./data/songs.json'\\); console.log\\('birthday.mp3 in shuffle pool:', s.includes\\('/audio/birthday.mp3'\\)\\)\")",
       "Bash(git commit -m 'reserve birthday.mp3 exclusively for July 16 dates *)",
       "Bash(node scripts/extract-suspects.js --all)",
-      "Bash(git commit -m 'trust reset: only metadata-proven media on the calendar; 194 unproven items parked in review/ *)"
+      "Bash(git commit -m 'trust reset: only metadata-proven media on the calendar; 194 unproven items parked in review/ *)",
+      "Bash(curl -s -o /dev/null -w \"homepage: %{http_code}\\\\n\" https://sunimuni.living/ --max-time 15)",
+      "Bash(curl -s -o /dev/null -w \"calendar: %{http_code}\\\\n\" https://sunimuni.living/calendar/ --max-time 15)",
+      "Bash(curl -s -o /dev/null -w \"birthday song: %{http_code}\\\\n\" https://sunimuni.living/audio/birthday.mp3 --max-time 15)",
+      "Bash(curl -s -o /dev/null -w \"shuffle song: %{http_code}\\\\n\" https://sunimuni.living/audio/song-08.mp3 --max-time 15)",
+      "Bash(curl -s -o /dev/null -w \"http->https redirect: %{redirect_url}\\\\n\" http://sunimuni.living/ --max-time 15)",
+      "Bash(git commit -m 'refresh 3 titles to match remaining photos after trust reset *)"
     ]
   }
 }
