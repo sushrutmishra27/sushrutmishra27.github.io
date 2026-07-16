@@ -103,6 +103,23 @@ async function* walk(dir) {
 // Date extraction — the heart of the script
 // ---------------------------------------------------------------------------
 
+// HIGHEST AUTHORITY: a date written at the start of the filename by a human,
+// e.g. "2026-05-20 lake video.mov". If present, it wins over all metadata.
+function filenameDate(file) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})\b/.exec(path.basename(file));
+  if (!m) return null;
+  const [, y, mo, d] = m;
+  const t = new Date(Number(y), Number(mo) - 1, Number(d));
+  if (t.getFullYear() !== Number(y) || t.getMonth() !== Number(mo) - 1) return null;
+  return `${y}-${mo}-${d}`;
+}
+
+// Metadata stamped in the future is impossible and therefore untrustworthy.
+function isFutureDate(dateStr) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return new Date(y, m - 1, d).getTime() > Date.now();
+}
+
 // Photos: read EXIF "DateTimeOriginal" via exiftool (handles HEIC natively).
 async function imageDate(file) {
   const tags = await exiftool.read(file);
@@ -283,12 +300,20 @@ async function main() {
       continue;
     }
 
-    // 1) Work out the date.
-    let date = null;
-    try {
-      date = kind === 'image' ? await imageDate(source) : await videoDate(source);
-    } catch (err) {
-      console.warn(`   ⚠️  Could not read metadata for ${path.basename(source)}: ${err.message}`);
+    // 1) Work out the date. A human-written date at the start of the
+    //    filename always wins; otherwise trust the file's own metadata —
+    //    unless that metadata claims a future date, which is impossible.
+    let date = filenameDate(source);
+    if (!date) {
+      try {
+        date = kind === 'image' ? await imageDate(source) : await videoDate(source);
+      } catch (err) {
+        console.warn(`   ⚠️  Could not read metadata for ${path.basename(source)}: ${err.message}`);
+      }
+      if (date && isFutureDate(date)) {
+        console.warn(`   ⚠️  ${path.basename(source)}: metadata says ${date} (the future!) — not trusting it`);
+        date = null;
+      }
     }
     if (!date) {
       // HOUSE RULE: a file with no capture date in its metadata NEVER goes on

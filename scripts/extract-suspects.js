@@ -93,19 +93,29 @@ async function main() {
         continue;
       }
 
-      // Does the file's own metadata confirm a capture date MATCHING the
-      // folder it sits on? (exiftool reads both photo EXIF and video
-      // QuickTime dates.) Anything unproven gets pulled.
+      // Proof, in order of authority:
+      //  1) a human-written date at the start of the filename matching the folder
+      //  2) the file's own metadata matching the folder — unless that date is
+      //     in the future, which is impossible and therefore untrustworthy.
       let confirmed = false;
-      try {
-        const t = await exiftool.read(abs);
-        const dt = t.DateTimeOriginal || t.CreateDate || t.MediaCreateDate;
-        if (dt && typeof dt === 'object' && dt.year) {
-          const real = `${dt.year}-${pad2(dt.month)}-${pad2(dt.day)}`;
-          confirmed = real === date;
+      const fname = /^(\d{4}-\d{2}-\d{2})\b/.exec(path.basename(abs));
+      const isFuture = (ds) => {
+        const [y, m, d] = ds.split('-').map(Number);
+        return new Date(y, m - 1, d).getTime() > Date.now();
+      };
+      if (fname && fname[1] === date) {
+        confirmed = true;
+      } else {
+        try {
+          const t = await exiftool.read(abs);
+          const dt = t.DateTimeOriginal || t.CreateDate || t.MediaCreateDate;
+          if (dt && typeof dt === 'object' && dt.year) {
+            const real = `${dt.year}-${pad2(dt.month)}-${pad2(dt.day)}`;
+            confirmed = real === date && !isFuture(real);
+          }
+        } catch {
+          confirmed = false;
         }
-      } catch {
-        confirmed = false;
       }
 
       if (confirmed) {

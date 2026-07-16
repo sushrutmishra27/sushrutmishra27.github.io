@@ -2917,40 +2917,5 @@
         "poster": "/media/2026-06-02/img-2418-thumb.jpg"
       }
     ]
-  },
-  "2026-07-16": {
-    "title": "the you i keep pressing replay on",
-    "media": [
-      {
-        "type": "video",
-        "src": "/media/2026-07-16/img-4445.mp4",
-        "poster": "/media/2026-07-16/img-4445-thumb.jpg"
-      },
-      {
-        "type": "video",
-        "src": "/media/2026-07-16/img-4561.mp4",
-        "poster": "/media/2026-07-16/img-4561-thumb.jpg"
-      },
-      {
-        "type": "video",
-        "src": "/media/2026-07-16/img-4566.mp4",
-        "poster": "/media/2026-07-16/img-4566-thumb.jpg"
-      },
-      {
-        "type": "video",
-        "src": "/media/2026-07-16/img-4658.mp4",
-        "poster": "/media/2026-07-16/img-4658-thumb.jpg"
-      },
-      {
-        "type": "video",
-        "src": "/media/2026-07-16/img-5257.mp4",
-        "poster": "/media/2026-07-16/img-5257-thumb.jpg"
-      },
-      {
-        "type": "video",
-        "src": "/media/2026-07-16/img-5320.mp4",
-        "poster": "/media/2026-07-16/img-5320-thumb.jpg"
-      }
-    ]
   }
 }
