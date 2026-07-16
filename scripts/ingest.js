@@ -291,9 +291,23 @@ async function main() {
       console.warn(`   ⚠️  Could not read metadata for ${path.basename(source)}: ${err.message}`);
     }
     if (!date) {
-      date = await mtimeDate(source);
-      warnings++;
-      console.warn(`   ⚠️  No capture date in ${path.basename(source)} — using file date ${date}`);
+      // HOUSE RULE: a file with no capture date in its metadata NEVER goes on
+      // the calendar — guessing dates put wrong photos on real dates once and
+      // never again. It parks in review/unsorted-<file-date>/ instead, where
+      // it waits to be assigned a date by a human.
+      const guess = await mtimeDate(source);
+      const parkDir = path.join(PROJECT_ROOT, 'review', `unsorted-${guess}`);
+      await fsp.mkdir(parkDir, { recursive: true });
+      const { slug: pSlug, ext: pExt } = slugifyFilename(source);
+      const parkDest = path.join(parkDir, `${pSlug}${pExt}`);
+      if ((await fileSize(parkDest)) === (await fileSize(source))) {
+        skipped++;
+      } else {
+        await fsp.copyFile(source, parkDest);
+        warnings++;
+        console.warn(`   ⚠️  No capture date in ${path.basename(source)} — parked in review/unsorted-${guess}/`);
+      }
+      continue;
     }
 
     // 2) Prepare the destination folder.

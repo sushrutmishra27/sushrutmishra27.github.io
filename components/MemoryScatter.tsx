@@ -28,13 +28,17 @@ function smallSrc(src: string): string {
   return src.replace(/(\.[a-z0-9]+)$/i, "-sm.jpg");
 }
 
+type Bounds = { leftMin: number; leftMax: number; topMin: number; topMax: number };
+
 // Jumbled pile, kept to the middle of the screen with comfortable breathing
 // room from all four edges. Instead of pure randomness (which can clump all
 // the photos into one corner), we lay an invisible grid over the centre
 // region, shuffle its cells, and drop one photo per cell with a small
 // wobble — random-feeling, but always evenly spread and centred.
-function makeSpots(count: number): Spot[] {
-  const LEFT = 18, RIGHT = 62, TOP = 26, BOTTOM = 54; // % of screen (card top-left corner)
+// The bounds are MEASURED per device (title height, card size, screen size)
+// so photos can never start above the title or spill off an edge.
+function makeSpots(count: number, bounds: Bounds): Spot[] {
+  const { leftMin: LEFT, leftMax: RIGHT, topMin: TOP, topMax: BOTTOM } = bounds;
   const cols = Math.max(1, Math.ceil(Math.sqrt(count * 1.6)));
   const rows = Math.max(1, Math.ceil(count / cols));
   const cells: { left: number; top: number }[] = [];
@@ -51,9 +55,12 @@ function makeSpots(count: number): Spot[] {
     const j = Math.floor(Math.random() * (i + 1));
     [cells[i], cells[j]] = [cells[j], cells[i]];
   }
+  // Wobble each card a little, but never outside the safe zone — the zone
+  // edges are hard walls, so no card can poke above the title or off-screen.
+  const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
   return cells.slice(0, count).map((cell) => ({
-    left: cell.left + (Math.random() - 0.5) * 5,
-    top: cell.top + (Math.random() - 0.5) * 4,
+    left: clamp(cell.left + (Math.random() - 0.5) * 5, LEFT, RIGHT),
+    top: clamp(cell.top + (Math.random() - 0.5) * 4, TOP, BOTTOM),
     rotate: (Math.random() - 0.5) * 24,
   }));
 }
@@ -65,7 +72,11 @@ function makeSpots(count: number): Spot[] {
  */
 export default function MemoryScatter({ date, memory, onClose }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [spots] = useState(() => makeSpots(memory.media.length));
+  const titleRef = useRef<HTMLDivElement>(null);
+  // Spots are computed AFTER first paint, from real measurements of this
+  // device: where the title actually ends, how big a card actually is.
+  const [spots, setSpots] = useState<Spot[] | null>(null);
+  const [contentTop, setContentTop] = useState(150); // px; refined on mount
   const [zoomIndex, setZoomIndex] = useState<number | null>(null);
   // Whichever polaroid was touched last rises to the top of the pile.
   const [zOrder, setZOrder] = useState<number[]>(() =>
@@ -99,6 +110,34 @@ export default function MemoryScatter({ date, memory, onClose }: Props) {
   const zoomOpen = zoomIndex !== null;
 
   useEffect(() => {
+    // Measure the real layout, then carve out the safe zone for the pile:
+    // below the title, above the bottom edge, centred horizontally.
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const titleBottom = titleRef.current
+      ? titleRef.current.getBoundingClientRect().bottom
+      : vh * 0.22;
+    setContentTop(titleBottom + 10);
+
+    const isMobile = vw < 768;
+    const cardW = (isMobile ? 112 : 160) + 16; // photo width + polaroid frame
+    const cardH = cardW * 1.35 + 26; // tall photos + the caption strip
+    const sideInset = isMobile ? 8 : 18; // % kept clear on left/right
+    const leftMin = sideInset;
+    const leftMax = Math.max(
+      leftMin,
+      Math.min(100 - sideInset - (cardW / vw) * 100, 64)
+    );
+    // +26px under the title: covers the wobble and the corners of tilted cards.
+    const topMin = ((titleBottom + 26) / vh) * 100;
+    const topMax = Math.max(
+      topMin,
+      Math.min(58, 100 - (cardH / vh) * 100 - 3)
+    );
+    setSpots(makeSpots(memory.media.length, { leftMin, leftMax, topMin, topMax }));
+  }, [memory.media.length]);
+
+  useEffect(() => {
     // Her birthday (July 16, any year) always gets its own special song.
     // Every other date draws randomly from the shared playlist, avoiding
     // whichever song played last.
@@ -107,10 +146,17 @@ export default function MemoryScatter({ date, memory, onClose }: Props) {
       pick = "/audio/birthday.mp3";
     } else {
       if (!songs.length) return;
-      const last = sessionStorage.getItem("sunimuni-last-song");
-      const pool = songs.length > 1 ? songs.filter((s) => s !== last) : songs;
-      pick = pool[Math.floor(Math.random() * pool.length)];
-      sessionStorage.setItem("sunimuni-last-song", pick);
+      // A song may only come around again after 5 OTHER songs have played.
+      // We remember the last 5 played and draw from everything else.
+      let recent: string[] = [];
+      try {
+        recent = JSON.parse(sessionStorage.getItem("sunimuni-recent-songs") || "[]");
+      } catch {}
+      const pool = songs.filter((s) => !recent.includes(s));
+      const from = pool.length ? pool : songs; // safety net for tiny playlists
+      pick = from[Math.floor(Math.random() * from.length)];
+      recent = [...recent, pick].slice(-Math.min(5, songs.length - 1));
+      sessionStorage.setItem("sunimuni-recent-songs", JSON.stringify(recent));
     }
 
     const audio = new Audio(pick);
@@ -157,7 +203,7 @@ export default function MemoryScatter({ date, memory, onClose }: Props) {
     if (broken.has(item.src)) return null; // failed to load -> not shown at all
     const isVideo = item.type === "video";
     const thumb = isVideo ? item.poster : smallSrc(item.src);
-    const spot = spots[i];
+    const spot = spots?.[i] ?? { left: 0, top: 0, rotate: 0 };
     return (
       <motion.div
         key={item.src}
@@ -237,6 +283,7 @@ export default function MemoryScatter({ date, memory, onClose }: Props) {
 
       {/* Title — the one romantic line for this day */}
       <motion.div
+        ref={titleRef}
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
@@ -280,13 +327,17 @@ export default function MemoryScatter({ date, memory, onClose }: Props) {
         </button>
       )}
 
-      {/* The polaroids: tidy row for a small day, centered pile for a big one */}
+      {/* The polaroids: tidy row for a small day, centered pile for a big one.
+          Both wait for the measured layout so nothing overlaps the title. */}
       {lined ? (
-        <div className="absolute inset-0 flex flex-wrap content-center items-center justify-center gap-6 px-12 pb-12 pt-32">
+        <div
+          className="absolute inset-x-0 bottom-0 flex flex-wrap content-center items-center justify-center gap-6 px-6 pb-12 md:px-12"
+          style={{ top: contentTop }}
+        >
           {memory.media.map(renderCard)}
         </div>
       ) : (
-        memory.media.map(renderCard)
+        spots && memory.media.map(renderCard)
       )}
 
       {/* Tap a polaroid -> full-size view (with swipe through the rest) */}
